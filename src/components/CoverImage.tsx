@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { publicUrl } from '../utils/publicUrl'
 
 type Props = {
   src: string
@@ -6,7 +7,7 @@ type Props = {
   className?: string
 }
 
-const FALLBACK = '/covers/01.jpg'
+const FALLBACK = publicUrl('covers/01.jpg')
 
 export function CoverImage({ src, alt, className }: Props) {
   const [current, setCurrent] = useState(src)

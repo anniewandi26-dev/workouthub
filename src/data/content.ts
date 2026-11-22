@@ -52,9 +52,10 @@ export const audienceFilters = [
 
 /** Local covers in /public/covers — always load, no CDN 404 */
 const COVER_COUNT = 35
+const assetBase = import.meta.env.BASE_URL || '/'
 const p = Array.from({ length: COVER_COUNT }, (_, i) => {
   const n = String(i + 1).padStart(2, '0')
-  return `/covers/${n}.jpg`
+  return `${assetBase}covers/${n}.jpg`
 })
 
 type Draft = Omit<FitnessItem, 'cover' | 'accent' | 'views'> & {
