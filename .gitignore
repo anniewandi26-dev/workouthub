@@ -11,6 +11,7 @@ node_modules
 dist
 dist-ssr
 *.local
+# docs/ is committed so GitHub Pages stays in sync with Desktop HTML
 
 # Editor directories and files
 .vscode/*
