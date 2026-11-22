@@ -8,7 +8,7 @@ import { publicUrl } from '../utils/publicUrl'
 const WAIT_MS = 5000
 
 export function Splash() {
-  const { t, ready, lang, mode, geoCountry, markEntered, resetEntered } = useI18n()
+  const { t, ready, lang, mode, markEntered, resetEntered } = useI18n()
   const navigate = useNavigate()
   const meta = getLangMeta(lang)
   const [progress, setProgress] = useState(0)
@@ -57,7 +57,7 @@ export function Splash() {
           {!ready
             ? t('splashLoading')
             : mode === 'auto'
-              ? `${t('ipMatched')}${geoCountry ? ` · ${geoCountry}` : ''} · ${meta.native}`
+              ? `${t('ipMatched')} · ${meta.native}`
               : `${t('manualLang')} · ${meta.native}`}
         </p>
         <LanguagePicker compact className="ad-gate-lang" />
