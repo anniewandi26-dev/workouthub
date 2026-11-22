@@ -10,7 +10,8 @@ import os from 'node:os'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const root = path.resolve(__dirname, '..')
-const PUBLIC_URL = 'https://gmworkout.com/'
+// Source site (stable). Domain gmworkout.com must point here without looping back.
+const PUBLIC_URL = 'https://anniewandi26-dev.github.io/workouthub/'
 const desktop = path.join(os.homedir(), 'Desktop')
 const docsDir = path.join(root, 'docs')
 const portableDir = path.join(desktop, 'WorkoutHub-html')
