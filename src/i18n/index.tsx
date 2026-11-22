@@ -17,7 +17,8 @@ import {
 import { MESSAGES, type MessageKey } from './messages'
 
 const LANG_KEY = 'forma-lang'
-const LANG_MODE_KEY = 'forma-lang-mode' // 'auto' | 'manual'
+/** Manual override only for this browser tab/session — each fresh open follows IP again */
+const LANG_MODE_SESSION = 'workouthub-lang-mode-session'
 
 type I18nCtx = {
   lang: LangCode
@@ -46,36 +47,45 @@ function readStoredLang(): LangCode | null {
   }
 }
 
-function readMode(): 'auto' | 'manual' {
+function readSessionManual(): boolean {
   try {
-    return localStorage.getItem(LANG_MODE_KEY) === 'manual' ? 'manual' : 'auto'
+    return sessionStorage.getItem(LANG_MODE_SESSION) === 'manual'
   } catch {
-    return 'auto'
+    return false
   }
 }
 
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [lang, setLang] = useState<LangCode>(() => readStoredLang() ?? 'en')
-  const [mode, setMode] = useState<'auto' | 'manual'>(readMode)
+  const [mode, setMode] = useState<'auto' | 'manual'>(() =>
+    readSessionManual() ? 'manual' : 'auto',
+  )
   const [ready, setReady] = useState(false)
   const [geoCountry, setGeoCountry] = useState<string | null>(null)
   const [geoCity, setGeoCity] = useState<string | null>(null)
-  // Session-only gate: every fresh open of the site starts at the ad screen again
   const [entered, setEntered] = useState(false)
 
   useEffect(() => {
     const ctrl = new AbortController()
+    // Drop legacy sticky manual flag so phones follow IP again
+    try {
+      localStorage.removeItem('forma-lang-mode')
+    } catch {
+      /* ignore */
+    }
+
     ;(async () => {
-      const storedMode = readMode()
+      const sessionManual = readSessionManual()
       const storedLang = readStoredLang()
 
-      if (storedMode === 'manual' && storedLang) {
+      // Session manual: keep user pick for this tab only
+      if (sessionManual && storedLang) {
         setMode('manual')
         setLang(storedLang)
         setReady(true)
-        // Still fetch geo for display, but don't override manual
         try {
           const geo = await detectLangFromIp(ctrl.signal)
+          if (ctrl.signal.aborted) return
           setGeoCountry(geo.country)
           setGeoCity(geo.city)
         } catch {
@@ -84,7 +94,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
         return
       }
 
-      // Auto: always coordinate with IP on open
+      // Auto (default): always match language to IP on open — including phones
       const geo = await detectLangFromIp(ctrl.signal)
       if (ctrl.signal.aborted) return
       setGeoCountry(geo.country)
@@ -93,7 +103,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
       setLang(geo.lang)
       try {
         localStorage.setItem(LANG_KEY, geo.lang)
-        localStorage.setItem(LANG_MODE_KEY, 'auto')
+        sessionStorage.setItem(LANG_MODE_SESSION, 'auto')
       } catch {
         /* ignore */
       }
@@ -114,7 +124,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     setMode('manual')
     try {
       localStorage.setItem(LANG_KEY, l)
-      localStorage.setItem(LANG_MODE_KEY, 'manual')
+      sessionStorage.setItem(LANG_MODE_SESSION, 'manual')
     } catch {
       /* ignore */
     }
@@ -123,7 +133,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   const useAutoIp = useCallback(() => {
     setMode('auto')
     try {
-      localStorage.setItem(LANG_MODE_KEY, 'auto')
+      sessionStorage.setItem(LANG_MODE_SESSION, 'auto')
     } catch {
       /* ignore */
     }
@@ -147,7 +157,6 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     setEntered(false)
   }, [])
 
-  // Clear any old persistent flag from previous versions
   useEffect(() => {
     try {
       localStorage.removeItem('workouthub-entered-v1')
