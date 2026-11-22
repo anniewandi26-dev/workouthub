@@ -52,7 +52,7 @@ async function fromGeoJs(signal?: AbortSignal): Promise<GeoResult> {
   return {
     lang: langFromCountry(data.country_code),
     country: data.country_code.toUpperCase(),
-    city: data.city ?? null,
+    city: null,
     source: 'ip',
   }
 }
@@ -69,7 +69,7 @@ async function fromIpWho(signal?: AbortSignal): Promise<GeoResult> {
   return {
     lang: langFromCountry(data.country_code),
     country: data.country_code.toUpperCase(),
-    city: data.city ?? null,
+    city: null,
     source: 'ip',
   }
 }
@@ -90,7 +90,7 @@ async function fromIpApi(signal?: AbortSignal): Promise<GeoResult> {
   return {
     lang: langFromCountry(data.country_code),
     country: data.country_code.toUpperCase(),
-    city: data.city ?? null,
+    city: null,
     source: 'ip',
   }
 }
