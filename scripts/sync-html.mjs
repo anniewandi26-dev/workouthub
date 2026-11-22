@@ -11,7 +11,6 @@ import os from 'node:os'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const root = path.resolve(__dirname, '..')
 const PUBLIC_URL = 'https://gmworkout.com/'
-const PUBLIC_FALLBACK = 'https://anniewandi26-dev.github.io/workouthub/'
 const desktop = path.join(os.homedir(), 'Desktop')
 const docsDir = path.join(root, 'docs')
 const portableDir = path.join(desktop, 'WorkoutHub-html')
@@ -37,14 +36,6 @@ function copyDir(src, dest) {
 
 copyDir(dist, docsDir)
 copyDir(dist, portableDir)
-
-// Keep custom domain for GitHub Pages (dist copy would wipe it)
-fs.writeFileSync(path.join(docsDir, 'CNAME'), 'gmworkout.com\n', 'utf8')
-// Ensure redirect helper is available at /go if needed
-fs.copyFileSync(
-  path.join(root, 'domain-redirect', 'index.html'),
-  path.join(docsDir, 'redirect.html'),
-)
 
 // Double-click opens the live public page (always in sync after deploy).
 const launcher = `<!doctype html>
@@ -91,21 +82,8 @@ const launcher = `<!doctype html>
 
 fs.writeFileSync(launcherPath, launcher, 'utf8')
 
-// Also write a desktop redirect helper that always goes to GitHub Pages mirror
-fs.writeFileSync(
-  path.join(desktop, 'WorkoutHub-GitHub.html'),
-  `<!doctype html><html><head><meta charset="UTF-8" />
-<meta http-equiv="refresh" content="0;url=${PUBLIC_FALLBACK}" />
-<script>location.replace(${JSON.stringify(PUBLIC_FALLBACK)})</script>
-</head><body style="background:#07111f;color:#c8f000;font-family:system-ui;display:grid;place-items:center;min-height:100vh;margin:0">
-<a style="color:#c8f000" href="${PUBLIC_FALLBACK}">WorkoutHub</a></body></html>
-`,
-  'utf8',
-)
-
 console.log('Synced:')
-console.log(' - docs/ (GitHub Pages) + CNAME gmworkout.com')
+console.log(' - docs/ (GitHub Pages)')
 console.log(' -', portableDir)
 console.log(' -', launcherPath)
 console.log('Public:', PUBLIC_URL)
-console.log('GitHub:', PUBLIC_FALLBACK)

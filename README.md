@@ -2,27 +2,27 @@
 
 West & Asia fitness media library (React + Vite + TypeScript).
 
-## Public links（公网）
+## 正式公网
 
 | | URL |
 | --- | --- |
-| **GitHub 仓库** | https://github.com/anniewandi26-dev/workouthub |
-| **公网网页** | https://anniewandi26-dev.github.io/workouthub/ |
-| **广告页** | https://anniewandi26-dev.github.io/workouthub/#/ |
-| **首页** | https://anniewandi26-dev.github.io/workouthub/#/home |
+| **正式域名** | https://gmworkout.com/ |
+| **GitHub Pages（源站）** | https://anniewandi26-dev.github.io/workouthub/ |
+| **仓库** | https://github.com/anniewandi26-dev/workouthub |
 
-## 双击打开（桌面 HTML，与公网同步）
+打开 `https://gmworkout.com/` 会进入 WorkoutHub（当前由域名跳转到 GitHub Pages 源站）。
 
-运行同步后，桌面会生成：
-
-1. **`WorkoutHub.html`** — 双击即可打开公网同步网页  
-2. **`WorkoutHub-html/`** — 完整静态站点副本（可用本地服务器预览）
+## 桌面 HTML
 
 ```bash
 npm run sync:html
 ```
 
-每次改完代码：`npm run sync:html` → 提交推送 → 公网与桌面 HTML 一起更新。
+会更新：
+
+1. `docs/` → GitHub Pages  
+2. 桌面 `WorkoutHub.html` → 打开正式域名  
+3. 桌面 `WorkoutHub-html/` → 静态完整包  
 
 ## Local
 
